@@ -180,6 +180,34 @@ describe('Cookie Session', function () {
     })
   })
 
+  describe('only one cookie', function () {
+    it('should still work', function (done) {
+      var app = App()
+      app.use(function (req, res, next) {
+        if (req.method === 'POST') {
+          req.session.string = 'hello'
+          res.statusCode = 204
+          res.end()
+        } else {
+          res.end(req.session.string)
+        }
+      })
+
+      request(app)
+      .post('/')
+      .expect(shouldHaveCookie('__session'))
+      .expect(204, function (err, res) {
+        if (err) return done(err)
+        var cookie = res.headers['set-cookie']
+
+        request(app)
+        .get('/')
+        .set('Cookie', cookie.find(val => val.indexOf('__session=') >= 0))
+        .expect('hello', done)
+      })
+    })
+  })
+
   describe('when the session is invalid', function () {
     it('should create new session', function (done) {
       var app = App({ name: 'my.session', signed: false })
