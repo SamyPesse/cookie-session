@@ -202,7 +202,7 @@ describe('Cookie Session', function () {
 
         request(app)
         .get('/')
-        .set('Cookie', cookie.find(val => val.indexOf('__session=') >= 0))
+        .set('Cookie', cookie.find(function (val) { return val.indexOf('__session=') >= 0 }))
         .expect('hello', done)
       })
     })
