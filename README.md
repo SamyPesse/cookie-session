@@ -1,10 +1,7 @@
 # firebase-cookie-session
 
 [![NPM Version][npm-image]][npm-url]
-[![NPM Downloads][downloads-image]][downloads-url]
 [![Build Status][travis-image]][travis-url]
-[![Test Coverage][coveralls-image]][coveralls-url]
-[![Gratipay][gratipay-image]][gratipay-url]
 
 Simple cookie-based session middleware designed to work with Firebase Cloud Functions.
 
@@ -34,3 +31,8 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 ```
+
+[npm-image]: https://img.shields.io/npm/v/firebase-cookie-session.svg
+[npm-url]: https://npmjs.org/package/firebase-cookie-session
+[travis-image]: https://img.shields.io/travis/SamyPesse/firebase-cookie-session/master.svg
+[travis-url]: https://travis-ci.org/SamyPesse/firebase-cookie-session
