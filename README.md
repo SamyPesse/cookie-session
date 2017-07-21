@@ -19,7 +19,7 @@ $ npm install firebase-cookie-session --save
 ## API
 
 ```js
-var cookieSession = require('cookie-session')
+var cookieSession = require('firebase-cookie-session')
 var express = require('express')
 
 var app = express()
