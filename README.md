@@ -6,9 +6,12 @@
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![Gratipay][gratipay-image]][gratipay-url]
 
-  Simple cookie-based session middleware designed to work with Firebase Cloud Functions.
+Simple cookie-based session middleware designed to work with Firebase Cloud Functions.
 
-  This module is forked from [`express/cookie-session`](https://github.com/express/cookie-session).
+On Firebase Cloud Functions, only the specially-named `__session` cookie is permitted to pass through to the function execution.
+
+This module is forked from [`express/cookie-session`](https://github.com/express/cookie-session), but behaves differently in
+how it stores the cookie signature to ensure that both the value and signature of the session are stored in `__session`.
 
 ## Install
 
