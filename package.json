@@ -1,22 +1,20 @@
 {
-  "name": "cookie-session",
-  "description": "cookie session middleware",
-  "version": "2.0.0-beta.2",
-  "contributors": [
-    "Douglas Christopher Wilson <doug@somethingdoug.com>",
-    "Jonathan Ong <me@jongleberry.com> (http://jongleberry.com)"
-  ],
+  "name": "firebase-cookie-session",
+  "description": "cookie session middleware designed for Firebase Cloud Functions",
+  "version": "0.0.0",
   "license": "MIT",
   "keywords": [
     "connect",
     "express",
     "middleware",
-    "session"
+    "session",
+    "firebase"
   ],
-  "repository": "expressjs/cookie-session",
+  "repository": "SamyPesse/firebase-cookie-session",
   "dependencies": {
     "cookies": "0.7.0",
     "debug": "2.6.8",
+    "keygrip": "^1.0.1",
     "on-headers": "~1.0.1",
     "safe-buffer": "5.0.1"
   },

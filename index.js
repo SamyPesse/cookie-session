@@ -1,8 +1,9 @@
 /*!
- * cookie-session
- * Copyright(c) 2013 Jonathan Ong
- * Copyright(c) 2014-2017 Douglas Christopher Wilson
- * MIT Licensed
+ * firebase-cookie-session
+ * Based on cookie-session:
+ *  Copyright(c) 2013 Jonathan Ong
+ *  Copyright(c) 2014-2017 Douglas Christopher Wilson
+ *  MIT Licensed
  */
 
 'use strict'
@@ -12,6 +13,7 @@
  * @private
  */
 
+var Keygrip = require('keygrip')
 var Buffer = require('safe-buffer').Buffer
 var debug = require('debug')('cookie-session')
 var Cookies = require('cookies')
@@ -30,10 +32,8 @@ module.exports = cookieSession
  * @param {object} [options]
  * @param {boolean} [options.httpOnly=true]
  * @param {array} [options.keys]
- * @param {string} [options.name=session] Name of the cookie to use
  * @param {boolean} [options.overwrite=true]
  * @param {string} [options.secret]
- * @param {boolean} [options.signed=true]
  * @return {function} middleware
  * @public
  */
@@ -42,7 +42,7 @@ function cookieSession (options) {
   var opts = options || {}
 
   // cookie name
-  var name = opts.name || 'session'
+  var name = '__session'
 
   // secrets
   var keys = opts.keys
@@ -51,21 +51,22 @@ function cookieSession (options) {
   // defaults
   if (opts.overwrite == null) opts.overwrite = true
   if (opts.httpOnly == null) opts.httpOnly = true
-  if (opts.signed == null) opts.signed = true
 
-  if (!keys && opts.signed) throw new Error('.keys required.')
+  if (!keys || keys.length === 0) throw new Error('.keys required.')
 
   debug('session options %j', opts)
 
   return function _cookieSession (req, res, next) {
-    var cookies = new Cookies(req, res, {
-      keys: keys
-    })
+    var cookies = new Cookies(req, res)
     var sess
 
     // to pass to Session()
     req.sessionCookies = cookies
     req.sessionOptions = Object.create(opts)
+    req.sessionKeygrip = new Keygrip(
+        // Sign with a new key
+        keys.concat([ keys[0] ]).slice(1)
+    )
     req.sessionKey = name
 
     // define req.session getter / setter
@@ -169,10 +170,18 @@ Session.deserialize = function deserialize (req, str) {
   var ctx = new SessionContext(req)
   var obj = decode(str)
 
+  var value = JSON.parse(obj.value)
+  var sig = obj.sig
+
+  // We verify the signature
+  if (!req.sessionKeygrip.verify(obj.value, sig)) {
+    throw new Error('Invalid signature for session cookie')
+  }
+
   ctx._new = false
   ctx._val = str
 
-  return new Session(ctx, obj)
+  return new Session(ctx, value)
 }
 
 /**
@@ -181,7 +190,11 @@ Session.deserialize = function deserialize (req, str) {
  */
 
 Session.serialize = function serialize (sess) {
-  return encode(sess)
+  var ctx = sess._ctx
+  var value = JSON.stringify(sess)
+  var sig = ctx.req.sessionKeygrip.sign(value)
+
+  return encode({ value, sig })
 }
 
 /**

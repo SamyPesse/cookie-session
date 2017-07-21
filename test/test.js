@@ -133,25 +133,6 @@ describe('Cookie Session', function () {
     })
   })
 
-  describe('when options.signed = false', function () {
-    describe('when app.keys are not set', function () {
-      it('should work', function (done) {
-        var app = connect()
-        app.use(session({
-          signed: false
-        }))
-        app.use(function (req, res, next) {
-          req.session.message = 'hi'
-          res.end()
-        })
-
-        request(app)
-        .get('/')
-        .expect(200, done)
-      })
-    })
-  })
-
   describe('when options.secure = true', function () {
     describe('when connection not secured', function () {
       it('should not Set-Cookie', function (done) {
@@ -186,10 +167,11 @@ describe('Cookie Session', function () {
 
       request(app)
       .post('/')
-      .expect(shouldHaveCookie('session'))
+      .expect(shouldHaveCookie('__session'))
       .expect(204, function (err, res) {
         if (err) return done(err)
         var cookie = res.headers['set-cookie']
+
         request(app)
         .get('/')
         .set('Cookie', cookie.join(';'))
@@ -252,7 +234,7 @@ describe('Cookie Session', function () {
 
         request(app)
         .get('/')
-        .expect(shouldHaveCookie('session'))
+        .expect(shouldHaveCookie('__session'))
         .expect(200, function (err, res) {
           if (err) return done(err)
           cookie = res.header['set-cookie'].join(';')
@@ -330,7 +312,7 @@ describe('Cookie Session', function () {
         request(app)
         .get('/')
         .set('Cookie', cookie)
-        .expect(shouldHaveCookie('session'))
+        .expect(shouldHaveCookie('__session'))
         .expect(200, done)
       })
     })
@@ -347,7 +329,7 @@ describe('Cookie Session', function () {
 
         request(app)
         .get('/')
-        .expect(shouldHaveCookie('session'))
+        .expect(shouldHaveCookie('__session'))
         .expect(200, done)
       })
 
@@ -360,7 +342,7 @@ describe('Cookie Session', function () {
 
         request(app)
         .get('/')
-        .expect(shouldHaveCookie('session'))
+        .expect(shouldHaveCookie('__session'))
         .expect(200, 'null', done)
       })
     })
@@ -390,7 +372,7 @@ describe('Cookie Session', function () {
 
         request(app)
         .get('/')
-        .expect(shouldHaveCookie('session'))
+        .expect(shouldHaveCookie('__session'))
         .expect(200, done)
       })
     })
