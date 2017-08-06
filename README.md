@@ -7,7 +7,7 @@ Simple cookie-based session middleware designed to work with Firebase Cloud Func
 
 On Firebase Cloud Functions, only the specially-named `__session` cookie is permitted to pass through to the function execution.
 
-This module is forked from [`express/cookie-session`](https://github.com/express/cookie-session), but behaves differently in
+This module is forked from [`expressjs/cookie-session`](https://github.com/expressjs/cookie-session), but behaves differently in
 how it stores the cookie signature to ensure that both the value and signature of the session are stored in `__session`.
 
 ## Install
